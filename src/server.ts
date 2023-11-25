@@ -1,0 +1,16 @@
+import app from './app';
+import config from './app/cofig';
+import mongoose from 'mongoose';
+
+async function main() {
+  try {
+    await mongoose.connect(config.database_url as string);
+    app.listen(config.port, () => {
+      console.log('App is listening port', config.port);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+main();
