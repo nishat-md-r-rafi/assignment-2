@@ -6,9 +6,7 @@ const app: Application = express();
 app.use(express.json());
 app.use(cors());
 app.get('/', (req: Request, res: Response) => {
-  const a = 20;
-
-  res.send(a);
+  res.json('He aaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 });
 
 export default app;
