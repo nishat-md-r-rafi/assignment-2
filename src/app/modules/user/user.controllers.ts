@@ -5,6 +5,7 @@ import userValidationSchema, {
   partialUserValidationSchema,
 } from './user.validation';
 import { ordersSchema } from './user.validation';
+import { UserModel } from './user.model';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -23,22 +24,36 @@ const createUser = async (req: Request, res: Response) => {
 };
 
 const updateUser = async (req: Request, res: Response) => {
-  try {
-    const parsedData = partialUserValidationSchema.parse(req.body);
-    const { userId } = req.params;
-    const result = await UserServices.updateSingleUserFromDB(
-      Number(userId),
-      parsedData,
-    );
+  const { userId } = req.params;
+  // const result = await UserModel.isUserExists(Number(userId));
+  // console.log(result);
 
-    res.status(200).json({
-      success: true,
-      message: 'user updated successfully!',
-      data: result,
+  if (await UserModel.isUserExists(Number(userId))) {
+    try {
+      const parsedData = partialUserValidationSchema.parse(req.body);
+      const result = await UserServices.updateSingleUserFromDB(
+        Number(userId),
+        parsedData,
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'user updated successfully!',
+        data: result,
+      });
+    } catch (error) {
+      res.status(500).json(error);
+      console.log(error);
+    }
+  } else {
+    res.status(404).json({
+      success: false,
+      message: 'user  not found!',
+      error: {
+        code: 404,
+        description: 'user  not found!',
+      },
     });
-  } catch (error) {
-    res.status(500).json(error);
-    console.log(error);
   }
 };
 

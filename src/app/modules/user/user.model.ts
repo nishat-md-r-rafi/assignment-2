@@ -1,5 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { TAddress, TFullName, TOrders, TUser } from './user.interface';
+import {
+  TAddress,
+  TFullName,
+  TOrders,
+  TUser,
+  UserCustomModel,
+} from './user.interface';
 import * as CryptoJS from 'crypto-js';
 
 const fullNameSchema = new Schema<TFullName>({
@@ -19,7 +25,7 @@ const ordersSchema = new Schema<TOrders>({
   quantity: { type: Number, required: true },
 });
 
-const userSchema = new Schema<TUser>({
+const userSchema = new Schema<TUser, UserCustomModel>({
   userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -49,4 +55,9 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 
-export const UserModel = model<TUser>('User', userSchema);
+userSchema.statics.isUserExists = async function (userId: number) {
+  const result = await this.find({ userId });
+  return result.length > 0;
+};
+
+export const UserModel = model<TUser, UserCustomModel>('User', userSchema);
