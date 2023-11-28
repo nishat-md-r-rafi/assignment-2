@@ -109,6 +109,22 @@ const updateOrder = async (req: Request, res: Response) => {
   }
 };
 
+const getAllOrders = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  try {
+    const result = await UserServices.getAllOrdersFromDB(Number(userId));
+
+    res.status(200).json({
+      success: true,
+      message: 'Orders fetched successfully!',
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json(error);
+    console.log(error);
+  }
+};
+
 export const UserControllers = {
   createUser,
   updateUser,
@@ -116,4 +132,5 @@ export const UserControllers = {
   getSingleUser,
   deleteSingleUser,
   updateOrder,
+  getAllOrders,
 };
