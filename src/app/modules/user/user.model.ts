@@ -1,34 +1,52 @@
 import { Schema, model } from 'mongoose';
-import { Address, FullName, Orders, User } from './user.interface';
+import { TAddress, TFullName, TOrders, TUser } from './user.interface';
+import * as CryptoJS from 'crypto-js';
 
-const fullNameSchema = new Schema<FullName>({
+const fullNameSchema = new Schema<TFullName>({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
 });
 
-const addressSchema = new Schema<Address>({
+const addressSchema = new Schema<TAddress>({
   street: { type: String, required: true },
   city: { type: String, required: true },
   country: { type: String, required: true },
 });
 
-const ordersSchema = new Schema<Orders>({
+const ordersSchema = new Schema<TOrders>({
   productName: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
 });
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema<TUser>({
   userId: { type: Number, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   fullName: fullNameSchema,
   age: { type: Number, required: true },
   email: { type: String, required: true },
-  isActive: ['active', 'blocked'],
+  isActive: {
+    type: String,
+    enum: {
+      values: ['active', 'blocked'],
+      message: 'only can assign active and blocked!',
+    },
+    default: 'active',
+  },
   hobbies: [String],
   address: addressSchema,
   orders: { type: [ordersSchema], required: false },
 });
 
-export const UserModel = model<User>('User', userSchema);
+userSchema.pre('save', function (next) {
+  this.password = CryptoJS.AES.encrypt(this.password, 'rafidev005').toString();
+  next();
+});
+
+userSchema.post('save', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
+export const UserModel = model<TUser>('User', userSchema);

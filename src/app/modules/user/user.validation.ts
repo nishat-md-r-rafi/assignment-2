@@ -11,7 +11,7 @@ const addressSchema = z.object({
   country: z.string(),
 });
 
-const ordersSchema = z.object({
+export const ordersSchema = z.object({
   productName: z.string(),
   price: z.number(),
   quantity: z.number(),
@@ -27,7 +27,8 @@ export const userValidationSchema = z.object({
   isActive: z.enum(['active', 'blocked']),
   hobbies: z.array(z.string()),
   address: addressSchema,
-  orders: z.array(ordersSchema),
+  orders: z.array(ordersSchema).optional(),
 });
 
+export const partialUserValidationSchema = userValidationSchema.partial();
 export default userValidationSchema;
