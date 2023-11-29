@@ -7,6 +7,7 @@ import {
   UserCustomModel,
 } from './user.interface';
 import * as CryptoJS from 'crypto-js';
+import config from './../../cofig/index';
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: { type: String, required: true },
@@ -46,7 +47,10 @@ const userSchema = new Schema<TUser, UserCustomModel>({
 });
 
 userSchema.pre('save', function (next) {
-  this.password = CryptoJS.AES.encrypt(this.password, 'rafidev005').toString();
+  this.password = CryptoJS.AES.encrypt(
+    this.password,
+    config.pass_key as string,
+  ).toString();
   next();
 });
 

@@ -6,6 +6,7 @@ import userValidationSchema, {
 } from './user.validation';
 import { ordersSchema } from './user.validation';
 import { UserModel } from './user.model';
+import { TOrders } from './user.interface';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -166,12 +167,14 @@ const getAllOrders = async (req: Request, res: Response) => {
 
   if (await UserModel.isUserExists(Number(userId))) {
     try {
-      const result = await UserServices.getAllOrdersFromDB(Number(userId));
+      const result = (await UserServices.getAllOrdersFromDB(
+        Number(userId),
+      )) as { [key: string]: any };
 
       res.status(200).json({
         success: true,
         message: 'Orders fetched successfully!',
-        data: { ...result[0]._doc },
+        data: { ...(result[0]._doc as TOrders[]) },
       });
     } catch (error) {
       res.status(500).json(error);
