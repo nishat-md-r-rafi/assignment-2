@@ -7,12 +7,12 @@ const createUserIntoDB = async (user: TUser) => {
 };
 
 const getAllUsersFromDB = async () => {
-  const result = await UserModel.find();
+  const result = await UserModel.find().select('-password');
   return result;
 };
 
 const getSingleUserFromDB = async (userId: number) => {
-  const result = await UserModel.find({ userId });
+  const result = await UserModel.find({ userId }).select('-password');
   return result;
 };
 

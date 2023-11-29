@@ -55,6 +55,11 @@ userSchema.post('save', function (doc, next) {
   next();
 });
 
+userSchema.post('find', function (doc, next) {
+  doc.password = '';
+  next();
+});
+
 userSchema.statics.isUserExists = async function (userId: number) {
   const result = await this.find({ userId });
   return result.length > 0;
