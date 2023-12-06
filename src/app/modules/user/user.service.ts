@@ -7,12 +7,12 @@ const createUserIntoDB = async (user: TUser) => {
 };
 
 const getAllUsersFromDB = async () => {
-  const result = await UserModel.find().select('-password');
+  const result = await UserModel.find().select('-password -orders');
   return result;
 };
 
 const getSingleUserFromDB = async (userId: number) => {
-  const result = await UserModel.find({ userId }).select('-password');
+  const result = await UserModel.find({ userId }).select('-password -orders');
   return result;
 };
 
@@ -23,7 +23,8 @@ const updateSingleUserFromDB = async (
   const result = await UserModel.findOneAndUpdate(
     { userId },
     { $set: newData },
-  );
+    { returnDocument: 'after' },
+  ).select('-password');
   return result;
 };
 const deleteSingleUserFromDB = async (userId: number) => {

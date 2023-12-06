@@ -81,7 +81,7 @@ const getSingleUser = async (req: Request, res: Response) => {
       res.status(200).json({
         success: true,
         message: 'User fetched successfully!',
-        data: result,
+        data: result[0],
       });
     } catch (error) {
       res.status(500).json(error);
@@ -169,6 +169,7 @@ const getAllOrders = async (req: Request, res: Response) => {
     try {
       const result = (await UserServices.getAllOrdersFromDB(
         Number(userId),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       )) as { [key: string]: any };
 
       res.status(200).json({
