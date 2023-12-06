@@ -33,14 +33,7 @@ const userSchema = new Schema<TUser, UserCustomModel>({
   fullName: fullNameSchema,
   age: { type: Number, required: true },
   email: { type: String, required: true },
-  isActive: {
-    type: String,
-    enum: {
-      values: ['active', 'blocked'],
-      message: 'only can assign active and blocked!',
-    },
-    default: 'active',
-  },
+  isActive: { type: Boolean, default: true },
   hobbies: [String],
   address: addressSchema,
   orders: { type: [ordersSchema], required: false },
